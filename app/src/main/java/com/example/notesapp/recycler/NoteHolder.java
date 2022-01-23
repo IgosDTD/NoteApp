@@ -23,8 +23,7 @@ public class NoteHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(v -> listener.onNoteClick(note));
     }
 
-    void bind(Note note)
-    {
+    void bind(Note note) {
         this.note = note;
         title.setText(note.getTitle());
         description.setText(note.getDescription());

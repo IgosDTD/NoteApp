@@ -17,12 +17,14 @@ import com.example.notesapp.data.Note;
 import com.example.notesapp.data.Repo;
 
 
-public class EditNoteActivity extends AppCompatActivity {
+public class EditNoteActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText title;
     private EditText description;
     private Button saveNote;
     private int id = -1;
+    private Note note;
+    private Repo repository = InMemoryRepoImpl.getInstance();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,15 +36,35 @@ public class EditNoteActivity extends AppCompatActivity {
         saveNote = findViewById(R.id.edit_note_update);
 
         Intent intent = getIntent();
-        if(intent != null)
-        {
-            Note note = (Note) intent.getSerializableExtra(Constants.NOTE);
+        if (intent != null) {
+            Note note = (Note) intent.getSerializableExtra((Constants.NOTE));
             id = note.getId();
             title.setText(note.getTitle());
-            description.setText(note.getDescription());
+            description.setText((note.getDescription()));
         }
+        saveNote.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        String updateTitle = title.getText().toString();
+        String updateDescription = description.getText().toString();
+        Intent intent = new Intent(this,NotesListActivity.class);
+        Note note = new Note(id, updateTitle, updateDescription );
+        note.setTitle(updateTitle);
+        note.setDescription(updateDescription);
+        if(note.getId() == null) {
+            repository.create(note);
+        }else{
+            repository.update(note);
+        }
+        intent.putExtra(Constants.NOTE, note);
+        startActivity(intent);
+        finish();
 
     }
 }
+
 
 
